@@ -3,6 +3,8 @@ import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
 import { router as healthRouter } from './routes/health.js';
+import { authRouter } from './routes/auth.js';
+import { accountsRouter } from './routes/accounts.js';
 import { router as sitesRouter } from './routes/sites.js';
 import { router as pagesRouter } from './routes/pages.js';
 import { router as leadsRouter } from './routes/leads.js';
@@ -16,6 +18,8 @@ app.use(express.json({ limit: '2mb' }));
 app.use(requestLogger);
 
 app.use('/health', healthRouter);
+app.use('/auth', authRouter);
+app.use('/accounts', accountsRouter);
 app.use('/sites', sitesRouter);
 app.use('/pages', pagesRouter);
 app.use('/leads', leadsRouter);

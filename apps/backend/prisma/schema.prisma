@@ -15,6 +15,10 @@ model Account {
   createdAt DateTime @default(now())
   sites     Site[]
   users     UserAccount[]
+  sessions  Session[]
+  invites   AccountInvite[]
+  magicLinks MagicLinkToken[]
+  auditLogs AuditLog[]
 }
 
 model User {
@@ -23,12 +27,16 @@ model User {
   name      String?
   createdAt DateTime @default(now())
   accounts  UserAccount[]
+  sessions  Session[]
+  oauth     OAuthAccount[]
+  magicLinks MagicLinkToken[]
+  auditLogs AuditLog[]
 }
 
 model UserAccount {
   userId    String
   accountId String
-  role      String   @default("owner")
+  role      Role   @default(owner)
   user      User     @relation(fields: [userId], references: [id])
   account   Account  @relation(fields: [accountId], references: [id])
   @@id([userId, accountId])
@@ -69,4 +77,83 @@ model Lead {
   source    String?
   createdAt DateTime @default(now())
   site      Site     @relation(fields: [siteId], references: [id])
+}
+
+model Session {
+  id               String   @id @default(uuid())
+  userId           String
+  accountId        String
+  refreshTokenHash String   @unique
+  expiresAt        DateTime
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  user             User     @relation(fields: [userId], references: [id])
+  account          Account  @relation(fields: [accountId], references: [id])
+}
+
+model OAuthAccount {
+  id                 String   @id @default(uuid())
+  userId             String
+  provider           String
+  providerAccountId  String
+  accessToken        String?
+  refreshToken       String?
+  idToken            String?
+  expiresAt          DateTime?
+  createdAt          DateTime @default(now())
+  user               User     @relation(fields: [userId], references: [id])
+
+  @@unique([provider, providerAccountId])
+}
+
+model MagicLinkToken {
+  id         String   @id @default(uuid())
+  userId     String?
+  email      String
+  tokenHash  String   @unique
+  accountId  String?
+  role       Role?
+  createdAt  DateTime @default(now())
+  expiresAt  DateTime
+  consumedAt DateTime?
+  user       User?    @relation(fields: [userId], references: [id])
+  account    Account? @relation(fields: [accountId], references: [id])
+}
+
+model AccountInvite {
+  id         String        @id @default(uuid())
+  accountId  String
+  email      String
+  role       Role          @default(editor)
+  tokenHash  String        @unique
+  status     InviteStatus  @default(pending)
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  acceptedAt DateTime?
+  revokedAt  DateTime?
+  account    Account  @relation(fields: [accountId], references: [id])
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  accountId String?
+  userId    String?
+  action    String
+  metadata  Json?
+  createdAt DateTime @default(now())
+  account   Account? @relation(fields: [accountId], references: [id])
+  user      User?    @relation(fields: [userId], references: [id])
+}
+
+enum Role {
+  owner
+  admin
+  editor
+}
+
+enum InviteStatus {
+  pending
+  accepted
+  expired
+  revoked
 }

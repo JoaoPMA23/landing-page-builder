@@ -16,9 +16,17 @@ services:
     depends_on:
       - db
     environment:
+      APP_NAME: ${APP_NAME:-landing-backend}
+      LOG_LEVEL: ${LOG_LEVEL:-debug}
       DATABASE_URL: postgresql://app:app@db:5432/landingdb?schema=public
       PORT: 4000
       NODE_ENV: development
+      JWT_SECRET: ${JWT_SECRET:-dev-secret}
+      JWT_ACCESS_MINUTES: ${JWT_ACCESS_MINUTES:-15}
+      JWT_REFRESH_DAYS: ${JWT_REFRESH_DAYS:-30}
+      MAGIC_LINK_MINUTES: ${MAGIC_LINK_MINUTES:-15}
+      INVITE_DAYS: ${INVITE_DAYS:-7}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
     ports:
       - "4000:4000"
     volumes:
