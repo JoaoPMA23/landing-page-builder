@@ -1,0 +1,72 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id        String  @id @default(uuid())
+  name      String
+  plan      String  @default("free")
+  createdAt DateTime @default(now())
+  sites     Site[]
+  users     UserAccount[]
+}
+
+model User {
+  id        String  @id @default(uuid())
+  email     String  @unique
+  name      String?
+  createdAt DateTime @default(now())
+  accounts  UserAccount[]
+}
+
+model UserAccount {
+  userId    String
+  accountId String
+  role      String   @default("owner")
+  user      User     @relation(fields: [userId], references: [id])
+  account   Account  @relation(fields: [accountId], references: [id])
+  @@id([userId, accountId])
+}
+
+model Site {
+  id           String  @id @default(uuid())
+  accountId    String
+  name         String
+  subdomain    String  @unique
+  customDomain String? @unique
+  faviconUrl   String?
+  ogImageUrl   String?
+  isPublished  Boolean @default(false)
+  pages        Page[]
+  leads        Lead[]
+  account      Account @relation(fields: [accountId], references: [id])
+}
+
+model Page {
+  id        String  @id @default(uuid())
+  siteId    String
+  path      String
+  title     String
+  meta      Json?
+  tree      Json
+  status    String   @default("draft")
+  updatedAt DateTime @updatedAt
+  site      Site     @relation(fields: [siteId], references: [id])
+  @@unique([siteId, path])
+}
+
+model Lead {
+  id        String  @id @default(uuid())
+  siteId    String
+  pagePath  String
+  data      Json
+  source    String?
+  createdAt DateTime @default(now())
+  site      Site     @relation(fields: [siteId], references: [id])
+}
