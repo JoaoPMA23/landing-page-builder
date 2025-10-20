@@ -16,6 +16,7 @@ Monorepo simples com **frontend (Next 14 App Router)** e **backend (Express + Pr
    cp apps/backend/.env.example apps/backend/.env
    cp apps/frontend/.env.local.example apps/frontend/.env.local
    ```
+   - Defina os IDs de tracking (`GA4_MEASUREMENT_ID`, `META_PIXEL_ID`, `TIKTOK_PIXEL_ID` ou `NEXT_PUBLIC_*`) assim que for conectar os pixels.
 2. Suba tudo:
    ```bash
    docker compose up --build

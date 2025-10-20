@@ -23,6 +23,17 @@ router.post('/', async (req, res) => {
   const parsed = schema.safeParse(req.body);
   if (!parsed.success) return res.status(400).json(parsed.error);
 
-  const page = await prisma.page.create({ data: parsed.data });
+  const { siteId, path, title, meta, tree, status } = parsed.data;
+  // Persisting the page explicitly guarantees Prisma receives all required fields (notably tree).
+  const page = await prisma.page.create({
+    data: {
+      siteId,
+      path,
+      title,
+      meta,
+      tree: tree ?? {},
+      status,
+    },
+  });
   res.status(201).json(page);
 });

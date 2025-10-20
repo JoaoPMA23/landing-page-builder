@@ -5,7 +5,8 @@ import { prisma } from '../prisma.js';
 export const router = Router();
 
 router.get('/', async (_req, res) => {
-  const sites = await prisma.site.findMany({ take: 50, orderBy: { createdAt: 'desc' } });
+  // IDs are UUIDs, but ordering descending keeps newer records on top without depending on timestamps yet.
+  const sites = await prisma.site.findMany({ take: 50, orderBy: { id: 'desc' } });
   res.json(sites);
 });
 
