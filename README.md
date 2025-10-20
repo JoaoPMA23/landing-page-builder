@@ -35,6 +35,10 @@ Monorepo simples com **frontend (Next 14 App Router)** e **backend (Express + Pr
 - No backend: `npm i && npx prisma migrate dev && npm run dev`
 - No frontend: `npm i && npm run dev`
 
+## Gestão de segredos
+- Variáveis de exemplo ficam em `.env.example` (raiz, backend e frontend).
+- Consulte `docs/secrets.md` para detalhes sobre armazenamento e injeção de segredos em dev, CI/CD e produção.
+
 ## Pastas
 - `apps/frontend`: Next.js App Router. Inclui um esqueleto de Editor e um `BlockRenderer` simples.
 - `apps/backend`: Express + Prisma + rotas básicas (`/sites`, `/pages`, `/leads`, `/health`).

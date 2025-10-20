@@ -3,6 +3,9 @@
   "private": true,
   "scripts": {
     "docker:backend:test": "docker compose exec backend npm test",
-    "docker:backend:logs": "docker compose logs backend"
+    "docker:backend:logs": "docker compose logs backend",
+    "ci": "npm run ci:backend && npm run ci:frontend",
+    "ci:backend": "npm --prefix apps/backend test",
+    "ci:frontend": "npm --prefix apps/frontend run typecheck && npm --prefix apps/frontend run build"
   }
 }
